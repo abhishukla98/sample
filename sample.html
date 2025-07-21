@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Step Surprise!</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the body */
+        body {
+            font-family: "Inter", sans-serif; /* Using Inter font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            background-color: #e0f7fa; /* Light cyan background */
+            margin: 0;
+            padding: 20px; /* Add some padding for smaller screens */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+
+        /* Base styles for both surprise boxes */
+        .surprise-box-common {
+            width: 450px; /* Increased size for more content - now a big rectangle */
+            height: 400px; /* Increased size for more content - now a big rectangle */
+            display: flex;
+            flex-direction: column; /* Allow content to stack vertically */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.5s ease-in-out, opacity 0.5s ease-in-out; /* Smooth transitions for various properties */
+            overflow: hidden; /* Hide overflowing image initially */
+            position: relative; /* For absolute positioning of image */
+            text-align: center; /* Center text inside the box */
+            padding: 25px; /* Increased padding for the message */
+            border-radius: 1rem; /* Added rounded corners for the rectangle */
+        }
+
+        /* Styles for the first surprise box */
+        #surpriseBox1 {
+            background-color: #a78bfa; /* Purple background */
+            animation: float 3s ease-in-out infinite; /* Added floating animation */
+        }
+
+        #surpriseBox1:hover {
+            transform: translateY(-8px); /* Slight lift on hover, a bit more pronounced */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25); /* Enhanced shadow on hover */
+        }
+
+        #surpriseBox1.revealed {
+            opacity: 0; /* Fade out the first box when revealed */
+            pointer-events: none; /* Disable further clicks once revealed */
+            animation: none; /* Stop floating animation when revealed */
+        }
+
+        /* Styles for the second surprise box */
+        #surpriseBox2 {
+            background-color: #87CEEB; /* Light blue background for the second box */
+            /* It's already a rectangle because border-radius: 9999px; was removed */
+            opacity: 0; /* Initially hidden */
+            pointer-events: none; /* Disable clicks until visible */
+        }
+
+        #surpriseBox2.visible {
+            opacity: 1; /* Make it visible */
+            pointer-events: auto; /* Enable clicks */
+            animation: float 3s ease-in-out infinite; /* Add floating animation to the second box too */
+        }
+
+        #surpriseBox2:hover {
+            transform: translateY(-8px); /* Same hover effect as the first box */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        #surpriseBox2.revealed {
+            background-color: #ffc0cb; /* Changed to pink when revealed */
+            pointer-events: none; /* Disable further clicks once revealed */
+            transform: scale(1.05); /* Slightly expand when revealed */
+            animation: none; /* Stop floating animation when revealed */
+            color: #4a4a4a; /* Darker text color for readability on pink */
+            font-size: 1.4rem; /* Increased font size for more prominence */
+            font-weight: 600; /* Make text bold */
+            display: flex; /* Ensure flex properties are applied for centering */
+            align-items: center;
+            justify-content: center;
+            line-height: 1.5; /* Improve line spacing for readability */
+        }
+
+        /* Styles for images inside the boxes */
+        .surprise-box-common img {
+            width: 80%; /* Make image fit inside the box */
+            height: 80%;
+            object-fit: contain; /* Ensure the image is scaled nicely */
+            transition: opacity 0.3s ease-in-out; /* Smooth transition for image opacity */
+        }
+
+        .surprise-box-common.revealed img {
+            opacity: 0; /* Hide the image when revealed */
+        }
+
+        /* Keyframes for the floating animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 640px) {
+            .surprise-box-common {
+                width: 90%; /* Adjusted width for smaller screens */
+                height: 300px; /* Adjusted height for smaller screens */
+                font-size: 1rem; /* Smaller font on small screens for the message */
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="flex flex-col items-center space-y-8">
+        <!-- The First Surprise Box -->
+        <div id="surpriseBox1"
+             class="surprise-box-common rounded-xl shadow-lg
+                    text-white text-2xl font-bold select-none">
+            <!-- Surprise box image inside the first surprise box -->
+            <img id="giftImage1" src="https://placehold.co/150x150/FFD700/FFFFFF?text=Surprise+Box" alt="Surprise Box">
+        </div>
+
+        <!-- The Second Surprise Box (initially hidden) -->
+        <div id="surpriseBox2"
+             class="surprise-box-common shadow-lg
+                    text-white text-2xl font-bold select-none hidden">
+            <!-- Image for the second box -->
+            <img id="giftImage2" src="https://placehold.co/150x150/87CEEB/FFFFFF?text=Open+Me!" alt="Open Me Box">
+        </div>
+    </div>
+
+    <script>
+        // Get references to the HTML elements
+        const surpriseBox1 = document.getElementById('surpriseBox1');
+        const giftImage1 = document.getElementById('giftImage1');
+        const surpriseBox2 = document.getElementById('surpriseBox2');
+        const giftImage2 = document.getElementById('giftImage2');
+
+        // Add a click event listener to the first surprise box
+        surpriseBox1.addEventListener('click', function() {
+            // Add the 'revealed' class to the first box to fade it out and stop animation
+            surpriseBox1.classList.add('revealed');
+            giftImage1.style.opacity = '0'; // Hide its image
+
+            // After the first box fades out, display the second box
+            setTimeout(() => {
+                surpriseBox1.style.display = 'none'; // Completely hide the first box
+                surpriseBox2.classList.remove('hidden'); // Make the second box visible
+                surpriseBox2.classList.add('visible'); // Add visible class for its fade-in animation
+            }, 500); // Match this timeout with the opacity transition duration of surpriseBox1
+        });
+
+        // Add a click event listener to the second surprise box
+        surpriseBox2.addEventListener('click', function() {
+            // Add the 'revealed' class to the second box to change its style and stop animation
+            surpriseBox2.classList.add('revealed');
+            giftImage2.style.opacity = '0'; // Hide its image
+
+            // Set a timeout to ensure the image transition completes before text appears
+            setTimeout(() => {
+                // Update the content of the second box with the new message and emojis
+                surpriseBox2.innerHTML = '<p>sorry sorry sorry shweta nd mujhe nhi pta mai kya krta hu nd ha mai sachi mai ullu hu but, yr jo hota hai mai sach bol deta hu tumse and kabhi kuch chupata nhi hu se nd aise gussa rahegi to kaha jau bolnd chup chap baat kr lo else i will come to your house and kill you smjhi 😭😢</p>';
+            }, 300); // Match this timeout with the image opacity transition duration
+        });
+    </script>
+</body>
+</html>
