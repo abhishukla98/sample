@@ -110,9 +110,17 @@
         @media (max-width: 640px) {
             .surprise-box-common {
                 width: 90%; /* Adjusted width for smaller screens */
-                height: 300px; /* Adjusted height for smaller screens */
-                font-size: 1rem; /* Smaller font on small screens for the message */
+                height: 300px; /* Default height for unrevealed box on small screens */
+                font-size: 1rem; /* Smaller font on small screens for initial state */
                 padding: 15px;
+            }
+
+            /* Specific adjustments for the revealed state on smaller screens */
+            #surpriseBox2.revealed {
+                height: auto; /* Allow height to adjust to content */
+                min-height: 300px; /* Ensure a minimum height */
+                font-size: 1.1rem; /* Smaller font size for the revealed message on mobile */
+                padding: 20px; /* Adjust padding for better text fitting */
             }
         }
     </style>
